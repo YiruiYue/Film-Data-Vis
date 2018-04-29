@@ -1,0 +1,196 @@
+StackedAreaChart = function(_parentElement){
+    this.parentElement = _parentElement;
+    this.visConstructor();
+};
+
+StackedAreaChart.prototype.visConstructor = function(){
+    var vis = this;
+
+    vis.margin = { left:70, right:10, top:50, bottom:40 };
+    vis.height = 400 - vis.margin.top - vis.margin.bottom;
+    vis.width = 800 - vis.margin.left - vis.margin.right;
+
+    vis.svg = d3.select(vis.parentElement)
+        .append("svg")
+        .attr("width", vis.width + vis.margin.left + vis.margin.right)
+        .attr("height", vis.height + vis.margin.top + vis.margin.bottom);
+    vis.g = vis.svg.append("g")
+        .attr("transform", "translate(" + vis.margin.left + 
+            ", " + vis.margin.top + ")");
+
+    vis.t = () => { return d3.transition().duration(1000); }
+
+    vis.color = d3.scaleOrdinal(d3.schemeCategory20);
+
+
+    vis.x = d3.scaleTime().range([0, vis.width]);
+    vis.y = d3.scaleLinear().range([vis.height, 0]);
+
+    vis.yAxisCall = d3.axisLeft()
+        // .call(d3.axisLeft(vis.y)
+        .ticks(8)
+        .tickFormat(d3.formatPrefix(".1", 1e6));
+    vis.xAxisCall = d3.axisBottom()
+        .ticks(12);
+    vis.xAxis = vis.g.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + vis.height +")");
+    vis.yAxis = vis.g.append("g")
+        .attr("class", "y axis")
+
+    vis.stack = d3.stack()
+        .keys(["Action", "Comedy", "Drama", "Animation"]);
+
+    vis.area = d3.area()
+        .x(function(d) { 
+            return vis.x(parseTime(d.data.date)); })
+        .y0(function(d) { 
+
+            return vis.y(d[0]); })
+        .y1(function(d) { 
+            return vis.y(d[1]); });
+
+    vis.appendLegends();
+    vis.dataProcess();
+};
+
+
+StackedAreaChart.prototype.dataProcess = function(){
+    var vis = this;
+    vis.variable = $("#var-select").val()
+    vis.dayNest = d3.nest()
+        .key(function(d){ return formatTime(d.date); })
+        .entries(calls)
+
+    vis.dataFiltered = vis.dayNest
+        .map(function(day){
+            return day.values.reduce(function(dataMap, curMovie){
+                dataMap.date = day.key
+                if( vis.variable == "gross" ){
+                    if(curMovie.genre == "Action" ) {
+                        dataMap.countAction++
+                        dataMap[curMovie.genre] += (curMovie[vis.variable])
+                    }
+                    if(curMovie.genre == "Comedy" ) {
+                        dataMap.countComedy++
+                        dataMap[curMovie.genre] += ( curMovie[vis.variable] )
+                    }
+                    if(curMovie.genre == "Drama" ) {
+                        dataMap.countDrama++
+                        dataMap[curMovie.genre] += (curMovie[vis.variable] )
+                    }
+                    if(curMovie.genre == "Animation" ) {
+                        dataMap.countAnimation++
+                        dataMap[curMovie.genre] += (curMovie[vis.variable] )
+                    }
+                } else { // else 'budget'
+                    if(curMovie[vis.variable] != 0){ // skip the movie data which has 0 in its budget attribute
+                        if(curMovie.genre == "Action" ) {
+                            dataMap.countAction++
+                            dataMap[curMovie.genre] += (curMovie["gross"] - curMovie[vis.variable]) / dataMap.countAction
+                        }
+                        if(curMovie.genre == "Comedy" ) {
+                            dataMap.countComedy++
+                            dataMap[curMovie.genre] += ( curMovie["gross"]  - curMovie[vis.variable] ) / dataMap.countComedy
+                        }
+                        if(curMovie.genre == "Drama" ) {
+                            dataMap.countDrama++
+                            dataMap[curMovie.genre] += ( curMovie["gross"] - curMovie[vis.variable] ) / dataMap.countDrama
+                        }
+                        if(curMovie.genre == "Animation" ) {
+                            dataMap.countAnimation++
+                            dataMap[curMovie.genre] += (curMovie["gross"]  - curMovie[vis.variable] )/ dataMap.countAnimation
+                        }
+                    }
+                }
+                return dataMap;
+            }, {
+                "Action": 0,
+                "Comedy": 0,
+                "Drama": 0,
+                "Animation": 0,
+                "countAction": 1,
+                "countComedy":1,
+                "countDrama":1,
+                "countAnimation":1
+            })
+        })
+
+    vis.update();
+};
+
+StackedAreaChart.prototype.update = function(){
+    var vis = this;
+
+    vis.maxDateVal = d3.max(vis.dataFiltered, function(d){
+        var vals = d3.keys(d).map(function(key){ 
+            return key !== 'date' ? d[key] : 0 });
+        return d3.sum(vals);
+    });
+
+    // scale update
+    vis.x.domain(d3.extent(vis.dataFiltered, (d) => {  return parseTime(d.date); }));
+    vis.y.domain([0, vis.maxDateVal]) 
+
+    // both axes update
+    vis.xAxisCall.scale(vis.x);
+    vis.xAxis.transition(vis.t()).call(vis.xAxisCall);
+    vis.yAxisCall.scale(vis.y);
+    vis.yAxis.transition(vis.t()).call(vis.yAxisCall);
+
+    vis.genre = vis.g.selectAll(".genre")
+        .data(vis.stack(vis.dataFiltered));
+    
+    // update the path for each genre
+    vis.genre.select(".area")
+        .attr("d", vis.area)
+
+    vis.genre.enter().append("g")
+        .attr("class", function(d){ return "genre " + d.key })
+        .append("path")
+            .attr("class", "area")
+            .attr("d", vis.area)
+            .style("fill", function(d){
+                console.log(d.key);
+                return vis.color(d.key)
+            })
+            .style("fill-opacity", 0.6)
+};
+
+
+StackedAreaChart.prototype.appendLegends = function(){
+    var vis = this;
+
+    var legend = vis.g.append("g")
+        .attr("transform", "translate(" + (50) + 
+                    ", " + (-25) + ")");
+
+    var allLegends = [
+        {label: "Action", color: vis.color("Action")},
+        {label: "Comedy", color: vis.color("Comedy")},
+        {label: "Drama", color: vis.color("Drama")},
+        {label: "Animation", color: vis.color("Animation")}
+    ]
+
+    var legendCol = legend.selectAll(".legendCol")
+        .data(allLegends)
+        .enter().append("g")
+            .attr("class", "legendCol")
+            .attr("transform", (d, i) => {
+                return "translate(" + (i * 150) + ", " + (0) + ")"
+            });
+        
+    legendCol.append("rect")
+        .attr("class", "legendRect")
+        .attr("width", 10)
+        .attr("height", 10)
+        .attr("fill", d => { return d.color; })
+        .attr("fill-opacity", 0.5);
+
+    legendCol.append("text")
+        .attr("class", "legendText")
+        .attr("x", 20)
+        .attr("y", 10)
+        .attr("text-anchor", "start")
+        .text(d => { return d.label; }); 
+}
