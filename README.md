@@ -23,6 +23,12 @@ Serving HTTP on 0.0.0.0 port 8888 ...
 
 ```
 
+## Screent shot
+
+<img width="1278" alt="screenshot1" src="https://user-images.githubusercontent.com/25022655/39411283-4a9e7cb4-4bc4-11e8-8acd-dff1c6ab309c.png">
+
+<img width="1277" alt="screenshot2" src="https://user-images.githubusercontent.com/25022655/39411291-65d24f6a-4bc4-11e8-88e7-0dc679856fdd.png">
+
 
 ## Assumptions Made
 •	The data in the dataset are geunine data that are collected from industry.
