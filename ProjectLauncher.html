@@ -1,0 +1,104 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <title>Film Analysis</title>
+    <!-- Style Link -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/jquery-ui.min.css">
+    <link rel="stylesheet" href="css/jquery-ui.structure.min.css">
+    <link rel="stylesheet" href="css/jquery-ui.theme.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <nav class="navbar navbar-default">
+        <div class="container">
+            <label id="title">Film Production Analysis</label>
+        </div>
+    </nav>
+
+    <!-- Page main layout-->
+    <div class="container">
+        <div class="row">
+            <div id="charts" class="col-md-8">
+                <div id="stacked-area"></div>
+                <div id="timeline"></div>
+                <div id="company-size"></div>
+            </div>
+
+            <div id="description" class="col-md-4">
+                <div class="row">
+
+                    <div class="col-md-8">
+                        <select id="var-select" class="form-control">
+                            <option selected value="gross">Box Office (Million USD)</option>
+                            <option value="budget">Average Revenue (Million USD)</option>
+                        </select>
+                    </div>                          
+
+
+                    <div class="col-md-12" id="areaChartDes"> 
+
+                    	<h4>Movie Genre and Money</h4>
+                    	<p>First look at the box office number. </p>
+                    	<ul>
+                    		<li>Overall the box office is increasing.</li>
+                    		<li><font color="#8f0428">Action, comedy</font> movies dominate the box office.</li>
+                    		<li>People are loving <font color="#8f0428">animation</font> movies more and more!</li>
+                    	</ul>
+
+                    	<p>Now select the actual revenue from above.</p>
+                    	<ul>
+                    		<li>But high box office doesn <font color="#8f0428">not</font> mean high revenue when taking budget in.</li>
+                    		<li><font color="#8f0428">Action</font> movies might lose money.</li>
+                    		<li>Fluctuation is high in <font color="#8f0428">animation and drama</font>.</li>
+                    		<li><font color="#8f0428">Comedy</font> is the most safe investment.</li>
+                    	</ul>
+
+
+                    </div>
+                    
+                    <div class="col-md-12" id="timeChartDes">
+                    	<h4>Break the number down by years</h4>
+                    	<ul>
+                    		<li>Drag left time line to select year range.</li>
+                    		<li>Minimum range is <font color="#8f0428" size="4">one</font> year.</li>
+                    	</ul>
+                    	
+                    </div>
+
+                    <div class="col-md-12" id="donutChartDes">
+                    	<h4>Big Fish Eating Away Small Fish?</h4>
+                    	<p>A healthy industry should have many participants to compete with each other. In this case, is film industry health?</p>
+                    	<ul>
+                    		<li>Major film corporations are: Disney, WB, Universal, 20th Fox, Columbia, and Paramount.</li>
+                    		<li>Number of films produced by major six corporations has been increasing from less than <font color="#8f0428" size="4">20%</font> to more that <font color="#8f0428" size="4">25%</font> during the past 30 years.</li>
+                    		<li>Major film corporations seems to have more and more market share in the future, which is <font color="#8f0428">not</font> healthy for the film industry.</li>
+                    	</ul>
+                    	
+                    </div>
+
+                </div>
+            </div>
+
+        
+        </div>
+    </div>
+
+<!-- External Libraries -->
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery-ui.min.js"></script>
+<script src="js/d3.min.js"></script>
+
+<!-- Custom JS -->
+<script src="js/stackedAreaChart.js"></script>
+<script src="js/donutChart.js"></script>
+<script src="js/timeline.js"></script>
+<script src="js/main.js"></script>
+
+</body>
+</html>
