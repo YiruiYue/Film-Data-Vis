@@ -1,0 +1,100 @@
+.navbar {
+  height: 80px;
+  padding: 5px 0px;
+  background-color: #e4e8ea;
+}
+
+#chart-area svg {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+#title{
+  margin-top: 10px;
+  margin-left: 200px;  
+/*  display: block;
+  text-align: center;*/
+  font: 40px sans-serif;
+  color: #34495E;
+}
+
+
+#areaChartDes{
+  margin-top: 10px;
+  margin-left: 70px;
+  height: 340px;
+  width: 320px;
+  background-color: #f2f4f5;
+}
+
+
+#timeChartDes{
+  margin-top: 60px;
+  margin-left: 70px;
+  height: 110px;
+  width: 320px;
+  background-color: #f2f4f5;
+}
+
+
+#donutChartDes{
+  margin-top: 120px;
+  margin-left: 70px;
+  height: 380px;
+  width: 320px;
+  background-color: #f2f4f5;
+}
+
+
+#var-select{
+  margin-left: 55px;
+  width: 320px;
+}
+
+
+body {
+/*  background-color: #F1F3F3 */
+  background-color: #F8F9F9;    
+}
+
+.axis {
+	font: 10px sans-serif;
+}
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #D4D8DA;
+  stroke-width: 2px;
+  shape-rendering: crispEdges;
+}
+
+.line {
+  fill: none;
+  stroke-width: 2px;
+}
+
+.overlay {
+  fill: none;
+  pointer-events: all;
+}
+
+.focus circle {
+  fill: #F1F3F3;
+  stroke: #777;
+  stroke-width: 3px;
+}
+  
+.hover-line {
+  stroke: #777;
+  stroke-width: 2px;
+  stroke-dasharray: 3,3;
+}
+
+#selections .col-md-4 {
+  padding-left: 100px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+
